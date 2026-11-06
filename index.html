@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>국어 실전 오답 전수 진단 트래커 PRO (42 MECE)</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --panel: #162032;
+      --panel-hover: #1e2d45;
+      --border: #2a3b54;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-bg: rgba(56, 189, 248, 0.14);
+      --danger: #f43f5e;
+      --danger-bg: rgba(244, 63, 94, 0.16);
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 14px 18px;
+      line-height: 1.42;
+      font-size: 13px;
+    }
+
+    .container {
+      max-width: 1520px;
+      margin: 0 auto;
+    }
+
+    /* Top Bar */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .title-group h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-pro {
+      font-size: 0.7rem;
+      background: var(--accent-bg);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .title-group p {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      margin-top: 2px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    input[type="text"], select {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    input[type="text"]:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    button {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: var(--panel-hover);
+      border-color: var(--accent);
+    }
+
+    button.primary {
+      background: var(--accent-bg);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0b1120;
+    }
+
+    button.danger:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* Session & Quick Log Bar */
+    .CommandBar {
+      display: grid;
+      grid-template-columns: 1.1fr 1.3fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 1024px) {
+      .CommandBar {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bar-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 9px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .bar-label {
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .bar-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+
+    /* Dashboard Summary */
+    .dashboard {
+      display: grid;
+      grid-template-columns: 270px 1fr 340px;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 1180px) {
+      .dashboard {
+        grid-template-columns: 260px 1fr;
+      }
+      .log-card {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .stat-card h2 {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stat-big {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .cat-bars {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .cat-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+    }
+
+    .cat-bar-label {
+      width: 92px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cat-bar-track {
+      flex: 1;
+      height: 6px;
+      background: var(--bg);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .cat-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+
+    .cat-bar-val {
+      width: 22px;
+      text-align: right;
+      font-weight: 700;
+    }
+
+    /* Top Weaknesses */
+    .top-weakness-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .weakness-item {
+      background: rgba(11, 17, 32, 0.65);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--danger);
+      border-radius: 5px;
+      padding: 6px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .weakness-title {
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: #fda4af;
+    }
+
+    .weakness-action {
+      font-size: 0.76rem;
+      color: var(--text);
+      margin-top: 2px;
+    }
+
+    .weakness-action strong {
+      color: var(--accent);
+    }
+
+    .weakness-badge {
+      background: var(--danger-bg);
+      color: var(--danger);
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    /* Question History Log */
+    .q-log-list {
+      max-height: 185px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding-right: 2px;
+    }
+
+    .q-log-item {
+      background: rgba(11, 17, 32, 0.55);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 5px 8px;
+      font-size: 0.76rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .q-log-tags {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .q-del-btn {
+      padding: 1px 5px;
+      font-size: 0.7rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+    }
+
+    .q-del-btn:hover {
+      color: var(--danger);
+    }
+
+    .empty-state {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      padding: 16px 0;
+      text-align: center;
+    }
+
+    /* Filter & Tabs */
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    /* Checklist Grid */
+    .category-section {
+      margin-bottom: 18px;
+    }
+
+    .category-header {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .items-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .item-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 9px 11px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .item-card.has-count {
+      border-color: rgba(244, 63, 94, 0.6);
+      background: linear-gradient(180deg, rgba(244, 63, 94, 0.07) 0%, var(--panel) 100%);
+    }
+
+    .item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .code-badge {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 800;
+      font-size: 0.76rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--accent-bg);
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .item-card.has-count .code-badge {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .item-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex: 1;
+      color: var(--text);
+    }
+
+    .counter-box {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      background: var(--bg);
+      padding: 1px 4px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .cnt-btn {
+      padding: 1px 6px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+    }
+
+    .cnt-btn:hover:not(:disabled) {
+      color: var(--text);
+      background: var(--panel);
+    }
+
+    .cnt-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .cnt-val {
+      min-width: 20px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .item-card.has-count .cnt-val {
+      color: var(--danger);
+    }
+
+    .item-desc {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .item-prescription {
+      font-size: 0.75rem;
+      background: rgba(11, 17, 32, 0.55);
+      padding: 5px 7px;
+      border-radius: 4px;
+      border-left: 2px solid var(--accent);
+      color: #cbd5e1;
+    }
+
+    .item-prescription strong {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="title-group">
+        <h1>국어 실전 오답 전수 진단 트래커 <span class="badge-pro">42 MECE PRO</span></h1>
+        <p>회차별 기록 분리 · 전체 누적 통계(ALL) · 문항 2중 태깅 빠른 입력 · CSV/JSON 백업 지원</p>
+      </div>
+      <div class="controls">
+        <button onclick="exportSummary()">처방전 텍스트 복사</button>
+        <button onclick="exportCSV()">CSV 내보내기</button>
+        <button onclick="exportJSON()">JSON 백업</button>
+        <button onclick="document.getElementById('jsonImportInput').click()">JSON 복원</button>
+        <input type="file" id="jsonImportInput" accept=".json" style="display:none" onchange="importJSON(event)">
+        <button class="danger" onclick="resetCurrentSession()">현재 회차 초기화</button>
+      </div>
+    </header>
+
+    <!-- 회차 관리 및 빠른 태깅 바 -->
+    <section class="CommandBar">
+      <div class="bar-card">
+        <span class="bar-label">모의고사 회차 선택</span>
+        <div class="bar-group">
+          <select id="sessionSelect" onchange="changeSession(this.value)" style="flex:1; min-width:170px;"></select>
+          <input type="text" id="newSessionName" placeholder="새 회차명 (예: 9평, 이감 4회)" style="width:165px;" onkeydown="if(event.key==='Enter') createSession()">
+          <button class="primary" onclick="createSession()">+ 회차 추가</button>
+          <button class="danger" id="delSessionBtn" onclick="deleteCurrentSession()">삭제</button>
+        </div>
+      </div>
+
+      <div class="bar-card">
+        <span class="bar-label">빠른 2중 태깅 입력</span>
+        <div class="bar-group">
+          <input type="text" id="qNumInput" placeholder="문항 (예: 14)" style="width:85px;" onkeydown="if(event.key==='Enter') quickAddTag()">
+          <input type="text" id="qCodesInput" placeholder="코드 (예: A4 B6)" style="width:125px; text-transform:uppercase;" onkeydown="if(event.key==='Enter') quickAddTag()">
+          <input type="text" id="qMemoInput" placeholder="한줄 메모 (선택: 선지 4번 역전)" style="flex:1; min-width:130px;" onkeydown="if(event.key==='Enter') quickAddTag()">
+          <button class="primary" id="quickAddBtn" onclick="quickAddTag()">기록 (Enter)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 상단 3열 대시보드 -->
+    <section class="dashboard">
+      <div class="stat-card">
+        <div>
+          <h2><span id="statScopeTitle">현재 회차 오답 태깅</span> <span id="activeTypesCount">0 / 42 유형</span></h2>
+          <div class="stat-big" id="totalCount">0회</div>
+        </div>
+        <div class="cat-bars" id="catBars"></div>
+      </div>
+
+      <div class="stat-card">
+        <h2><span>최우선 교정 타겟 (Top 5 취약점 & If-Then 행동 강령)</span> <span>시험 직전 필독</span></h2>
+        <div id="topWeaknessContainer" class="top-weakness-list"></div>
+      </div>
+
+      <div class="stat-card log-card">
+        <h2><span>문항별 오답 태깅 기록</span> <span id="qLogCount">0건</span></h2>
+        <div id="qLogContainer" class="q-log-list"></div>
+      </div>
+    </section>
+
+    <!-- 탭 및 검색 필터 -->
+    <div class="filter-row">
+      <nav class="tabs" id="categoryTabs"></nav>
+      <div class="controls">
+        <input type="text" id="searchInput" placeholder="코드(A4, C3) 또는 키워드 검색 ( / 키)" style="width:210px;" oninput="render()">
+        <button id="filterActiveBtn" onclick="toggleActiveFilter()">누적 오답만 보기</button>
+      </div>
+    </div>
+
+    <!-- 메인 42항목 그리드 -->
+    <main id="checklistContainer"></main>
+  </div>
+
+  <script>
+    const ERROR_DATA = [
+      // A. 독서: 지문 독해 오류 (10)
+      { id: "A1", cat: "A. 독서: 지문 독해", title: "개념 정의 및 범주(포함 관계) 누락", desc: "A는 B의 하위 개념인데 대등하거나 반대로 묶음", action: "개념 첫 등장 시 밑줄, 상하 포함 관계는 여백에 기호(⊂)로 즉시 구조화" },
+      { id: "A2", cat: "A. 독서: 지문 독해", title: "비교/대조(공통점·차이점) 매칭 혼동", desc: "관점/대상 A와 B의 속성을 머릿속에서 뒤섞어 기억함", action: "비교 대상은 ○, △로 표기 고정하고 차이점이 갈리는 '척도(기준)'에 별표" },
+      { id: "A3", cat: "A. 독서: 지문 독해", title: "인과/선후/비례 관계 역전 독해", desc: "원인↔결과, 선↔후, 비례↔반비례 방향을 반대로 읽음", action: "텍스트로만 읽지 말고 지문 여백에 화살표(↑, ↓, →)로 메커니즘 시각화" },
+      { id: "A4", cat: "A. 독서: 지문 독해", title: "예외 및 제한 조건절 스킵", desc: "'단, ~일 때만', '~를 제외하고' 등 조건 표지를 흘려 읽음", action: "제한·예외 표지어 등장 시 무조건 네모 박스(□)를 크게 치고 1순위 출제 포인트로 인식" },
+      { id: "A5", cat: "A. 독서: 지문 독해", title: "지시어·접속어 문맥 연결 실패", desc: "'이처럼', '그러므로', '이러한'이 가리키는 앞 문장 핵심을 놓침", action: "지시어를 만나면 반드시 앞 문장의 어떤 구절을 받는지 화살표로 연결 후 전진" },
+      { id: "A6", cat: "A. 독서: 지문 독해", title: "마지막 문단(후반부) 날림 독해", desc: "시간 압박으로 지문 끝부분의 추가 정보나 의의/한계를 튕김", action: "마지막 문단에서 최소 선지 2개가 출제됨을 의식하고 마지막 5줄에서 호흡 늦추기" },
+      { id: "A7", cat: "A. 독서: 지문 독해", title: "생략된 전제 및 행간(대우 명제) 추론 실패", desc: "지문에 직접 안 적혔지만 논리상 당연한 귀결을 '없는 내용'이라 착각함", action: "'A이면 B이다'가 나오면 'B가 아니면 A가 아니다(대우)'와 반대 케이스를 동시에 생각" },
+      { id: "A8", cat: "A. 독서: 지문 독해", title: "산술 수식·비율·그래프(도표) 연동 오류", desc: "분모/분자 증감, 변화율과 절댓값, 그래프 축(X,Y)을 잘못 매칭함", action: "비율(A/B)은 여백에 분수 형태로 직접 적고, 그래프는 가로축·세로축 이름부터 동그라미" },
+      { id: "A9", cat: "A. 독서: 지문 독해", title: "(가)/(나) 주제 통합 지문 간 관점 교차 실패", desc: "(가)의 입장에서 (나)를 비판하거나 공통 화제를 찾는 연결고리 누락", action: "(가) 독해 직후 핵심 논지 한 줄 요약 후, (나)를 읽으며 (가)와 대립하는 지점에 체크" },
+      { id: "A10", cat: "A. 독서: 지문 독해", title: "다층적 조건 분기(Case by Case) 시뮬레이션 누락", desc: "법·경제·기술에서 조건 A, B, C 조합에 따른 다중 분기(If-Else) 케이스를 놓침", action: "조건이 2개 이상 겹치면 머리로만 처리하지 말고 여백에 간단한 경우의 수 표(Matrix) 작성" },
+
+      // B. 독서: 선지 및 보기 판단 오류 (9)
+      { id: "B1", cat: "B. 독서: 선지 판단", title: "패러프레이징(재진술) 1:1 매칭 실패", desc: "지문의 어휘가 선지에서 다른 표현으로 바뀐 것을 못 알아봄", action: "오답 정리 시 '지문 표현 = 선지 표현' 등호 노트를 만들고 유의어 치환 감각 훈련" },
+      { id: "B2", cat: "B. 독서: 선지 판단", title: "주체·객체 바꿔치기 함정", desc: "선지의 주어와 목적어가 지문과 반대로 서술된 것을 놓침", action: "선지가 길수록 주어(누가~)와 목적어(무엇을~), 서술어를 슬래시(/)로 끊어 주체 확인" },
+      { id: "B3", cat: "B. 독서: 선지 판단", title: "양상·범위·양태 과장 및 왜곡", desc: "가능성(~할 수 있다)↔필연성(반드시), 일부↔모두 조작에 걸림", action: "선지의 부사어('항상', '반드시', '모든', '~만')에 즉각 세모 표시 후 지문 조건과 대조" },
+      { id: "B4", cat: "B. 독서: 선지 판단", title: "필요조건·충분조건 혼동", desc: "유일한 원인인지, 여러 조건 중 하나인지 구분하지 못함", action: "'~하기만 하면 된다(충분)'와 '~해야만 한다(필요)'의 논리적 차이를 엄밀히 체크" },
+      { id: "B5", cat: "B. 독서: 선지 판단", title: "<보기> 사례와 지문 개념 일대일 대응 실패", desc: "<보기>의 낯선 상황(ㄱ, ㄴ)이 지문의 어느 원리인지 매칭 못 함", action: "<보기>를 읽자마자 선지로 가지 말고, <보기> 단어 옆에 지문 개념어를 먼저 번역해 적기" },
+      { id: "B6", cat: "B. 독서: 선지 판단", title: "무관한 문장 결합 및 층위(문단) 짜깁기 함정", desc: "지문에 각각 존재하는 참인 사실 두 개를 거짓 인과관계로 묶은 선지에 속음", action: "선지 중간의 '~하므로', '~을 통해'에 끊어 읽기 표시 후 실제 지문에서도 인과인지 검증" },
+      { id: "B7", cat: "B. 독서: 선지 판단", title: "부정의 부정(이중 부정) 및 비교급 기준점 착시", desc: "'~하지 않을 수 없다', 'A보다 B가 덜 감소한다' 등의 논리 계산이 꼬임", action: "이중 부정은 긍정문으로 바꾼 뒤 지문 위에 적고, 비교급은 부등호(A > B)로 변환해 판정" },
+      { id: "B8", cat: "B. 독서: 선지 판단", title: "어휘 문항: 문맥적 의미 vs 사전적/관용적 의미 혼동", desc: "문맥상 쓰임이 아닌 내 머릿속의 1차적 뜻이나 단어 표면만 보고 고름", action: "선지 예문의 밑줄 단어를 지문 자리(또는 그 반대)에 직접 대입해 말이 되는지 교체 검증" },
+      { id: "B9", cat: "B. 독서: 선지 판단", title: "선지 내 '전제 조건' 위배 (가정법 함정)", desc: "'~라면 ~할 것이다'에서 결론만 따지느라 앞의 가정이 지문과 모순됨을 놓침", action: "가정형 선지는 결론을 계산하기 전에 앞부분의 전제('~라면')가 성립 가능한지부터 확인" },
+
+      // C. 문학: 독해 및 선지 판단 오류 (11)
+      { id: "C1", cat: "C. 문학: 독해/선지", title: "화자/인물 및 상황·정서 파악 실패", desc: "누가 처한 어떤 상황인지, 그에 따른 태도가 무엇인지 놓침", action: "작품 독해 시 화자의 '상황(처지)'과 그에 대한 '반응(정서/태도 +,-)'에만 밑줄 긋기" },
+      { id: "C2", cat: "C. 문학: 독해/선지", title: "소설 인물 지칭(대명사/호칭) 및 주체 혼동", desc: "특히 고전소설에서 직함, 별호, 대명사가 누구인지 헷갈림", action: "고전소설 1문단과 <보기>를 조합해 인물 관계도(가계도/적대 구도)를 여백에 그리며 출발" },
+      { id: "C3", cat: "C. 문학: 독해/선지", title: "선지 전반부(사실) vs 후반부(해석) 끊어 읽기 실패", desc: "사실 확인은 맞는데 가치 판단이 틀린(혹은 반대인) 것에 속음", action: "문학 선지의 '~를 통해 / ~함으로써 / ~을 드러내어' 앞에 무조건 슬래시(/) 긋고 2단계 검증" },
+      { id: "C4", cat: "C. 문학: 독해/선지", title: "주관적 과잉 추론 (뇌피셜 개입)", desc: "지문이나 <보기>에 없는 인과관계를 스스로 상상해서 합리화함", action: "'그럴 수도 있지 않을까?'라는 생각이 들면 100% 오답. 지문 텍스트에 명시된 팩트만 인정" },
+      { id: "C5", cat: "C. 문학: 독해/선지", title: "<보기>의 외재적 준거(관점) 일탈", desc: "<보기>가 제시한 해석의 틀을 무시하고 내 느낌대로 풂", action: "문학은 <보기>가 헌법. <보기>의 핵심 키워드 3개에 동그라미 치고 선지와 기계적 매칭" },
+      { id: "C6", cat: "C. 문학: 독해/선지", title: "표현상의 특징(수사법·서술 방식) 개념 오류", desc: "역설/반어, 음성상징어, 시점, 서술자의 개입 등 개념 판단 미스", action: "자주 헷갈리는 표현법(점층, 영탄, 색채어 vs 색채 이미지, 요약적 제시 등) 판별 조건 암기" },
+      { id: "C7", cat: "C. 문학: 독해/선지", title: "고전시가 고어(古語) 및 필수 어휘 해독 불가", desc: "기본 고어 어휘나 관습적 상징(어부, 매화 등)을 몰라 문장 자체를 못 읽음", action: "모르는 고어가 나올 때마다 단어장에 수집하고 필수 고전 어휘 150개 즉시 암기" },
+      { id: "C8", cat: "C. 문학: 독해/선지", title: "시공간적 배경 변화 및 시선·의식의 흐름 오독", desc: "과거 회상↔현재, 근경↔원경, 공간 이동 등 시상 전개와 장면 전환을 놓침", action: "시간 표지어('일찍이', '어제', '지금')와 공간 이동 표지에 역삼각형(▽) 표시하며 읽기" },
+      { id: "C9", cat: "C. 문학: 독해/선지", title: "갈래 복합(시+수필/극) 작품 간 공통/차이점 매칭 오류", desc: "(가)에는 맞고 (나)에는 틀린 서술을 둘 다 맞는 것으로 착각함", action: "'(가)와 (나) 모두' 선지는 (가) 옆에 O/X, (나) 옆에 O/X를 각각 따로 적어서 판별" },
+      { id: "C10", cat: "C. 문학: 독해/선지", title: "시적 허용·도치·생략에 의한 문장 통사 구조 오독", desc: "시에서 도치되거나 생략된 문장 성분 때문에 행위 주체나 수식 관계를 잘못 연결함", action: "시행이 길고 어순이 꼬여 있으면 '누가(주어) - 무엇을 - 어찌한다(서술어)' 평서문으로 재배열" },
+      { id: "C11", cat: "C. 문학: 독해/선지", title: "(극/시나리오) 지시문·무대 장치·장면 전환(S#) 기능 간과", desc: "대사만 읽고 지시문의 행동/표정이나 오버랩·몽타주 등의 연출 효과를 놓침", action: "괄호 안의 지시문과 S#(장면 번호) 변화는 대사 이상으로 중요한 출제 요소이므로 밑줄" },
+
+      // D. 선택과목: 화작 / 언매 (6)
+      { id: "D1", cat: "D. 선택과목 (화작/언매)", title: "(언매) 문법 개념 빈틈 및 예외 규칙 미숙지", desc: "음운, 형태소, 통사, 중세국어 등의 기본 개념/예외를 몰라서 틀림", action: "틀린 문법 파트는 당일 기본서 해당 챕터를 다시 펴서 예외 용례까지 백지 복습" },
+      { id: "D2", cat: "D. 선택과목 (화작/언매)", title: "(언매) 지문·보기 조건 미적용 (기출 감각 의존)", desc: "지문에서 새롭게 정의한 문법 기준을 안 읽고 내 지식으로만 풂", action: "문법 지문형 문제는 내 기존 지식을 끄고 지문이 정의한 분류 기준(A/B)만 따라가기" },
+      { id: "D3", cat: "D. 선택과목 (화작/언매)", title: "(화작/매체) 발화 조건·수정 반영 여부 누락", desc: "조건 2개 중 1개만 확인하거나 초고-수정고 대조에서 눈이 미끄러짐", action: "조건 문항은 조건마다 ①, ② 번호를 매기고 예문에서도 ①, ②를 각각 찾아 매칭" },
+      { id: "D4", cat: "D. 선택과목 (화작/언매)", title: "(언매) 용례(예문) 즉석 형태소/문장성분 분석 실패", desc: "개념은 아는데 낯선 단어/문장을 쪼개거나 필수 부사어를 판별할 때 실수함", action: "눈으로 풀지 말고 시험지 여백에 직접 어근/접사(+)를 쪼개고 서술어 자릿수를 손으로 체크" },
+      { id: "D5", cat: "D. 선택과목 (화작/언매)", title: "(매체) 뉴미디어/웹 화면 UI 요소 및 데이터 연동 미스", desc: "하이퍼링크, 댓글, 표/그래프가 발표/초고에 어떻게 반영됐는지 짝짓기 실패", action: "시각 자료(표, 화면 UI)가 나오면 각 요소의 번호(ㄱ, ㄴ)가 본문 어디에 인용됐는지 선 긋기" },
+      { id: "D6", cat: "D. 선택과목 (화작/언매)", title: "(화작/매체) 대화·토론 참여자의 발화 의도 및 사회자 역할 오판", desc: "직전 발언에 대한 '일부 동의 후 반박'인지 '재반박'인지 등 담화 전략을 오판함", action: "밑줄 친 발화를 읽을 때 반드시 '직전 발화자의 마지막 문장'과 어떻게 호응하는지 묶어 읽기" },
+
+      // E. 실전 운용 및 멘탈 오류 (6)
+      { id: "E1", cat: "E. 실전 운용/멘탈", title: "발문 조건 오독 (긍정/부정 발문 착각)", desc: "'적절한/적절하지 않은', '모두 고른 것은' 등을 반대로 읽음", action: "문제를 읽을 때 '적절하지 않은'에는 큰 X표, '적절한'에는 큰 O표를 치는 습관 고정" },
+      { id: "E2", cat: "E. 실전 운용/멘탈", title: "1~3번 선지 성급한 확신 (4·5번 미확인)", desc: "초반 선지에 꽂혀 확실한 정답인 후반부 선지를 읽지도 않고 넘어감", action: "1~3번에서 정답이 나와도 4·5번 선지의 주어·서술어까지는 무조건 스캔하는 원칙 고수" },
+      { id: "E3", cat: "E. 실전 운용/멘탈", title: "매력적 오답과 정답 중 2지선다 패배", desc: "두 선지 중 고민하다가 항상 오답 쪽으로 손을 들어주는 패턴", action: "2지선다에 막히면 지엽적 문장보다 '지문/보기의 핵심 주제어'와 직결된 선지를 우선 선택" },
+      { id: "E4", cat: "E. 실전 운용/멘탈", title: "특정 지문 시간 지연으로 인한 연쇄 붕괴", desc: "킬러 문제에 매몰되어 뒤에 풀 수 있는 쉬운 지문을 통째로 날림", action: "한 문제에 2분 이상 지체되면 과감히 별표 치고 스킵. 지문별 마지노선 시간(예: 독서 12분) 엄수" },
+      { id: "E5", cat: "E. 실전 운용/멘탈", title: "배경지식·선입견 개입 및 고쳐 풀기(초심 번복) 참사", desc: "내 배경지식으로 지문 논리를 덮어씌우거나, 검토 때 맞은 답을 오답으로 고침", action: "지문에서 명백한 텍스트적 반증을 찾은 경우가 아니면 검토 시 처음 고른 답 절대 수정 금지" },
+      { id: "E6", cat: "E. 실전 운용/멘탈", title: "지문-선지 간 왕복(Scanning) 시 시선 미끄러짐 및 위치 기억 실패", desc: "지문 정보 위치를 못 찾아 엉뚱한 문단을 헤매며 시간을 허비하고 오독함", action: "문단별로 핵심 화제어 1개에만 큰 동그라미를 쳐서 지문 전체의 '목차(인덱스)'를 만들어 두기" }
+    ];
+
+    const VALID_IDS = new Set(ERROR_DATA.map(d => d.id));
+    const STORAGE_KEY_PRO = "korean_error_tracker_pro_v42";
+    const LEGACY_KEY = "korean_error_tracker_v42";
+
+    let appState = loadInitialState();
+    let currentCategory = "ALL";
+    let showOnlyActive = false;
+
+    function loadInitialState() {
+      const saved = localStorage.getItem(STORAGE_KEY_PRO);
+      if (saved) {
+        try { return JSON.parse(saved); } catch (e) {}
+      }
+      // 이전 단일 버전 데이터가 있으면 1회차로 자동 마이그레이션
+      const legacy = localStorage.getItem(LEGACY_KEY);
+      let initialCounts = {};
+      if (legacy) {
+        try { initialCounts = JSON.parse(legacy); } catch (e) {}
+      }
+      return {
+        activeSessionId: "s_default",
+        sessions: [
+          {
+            id: "s_default",
+            name: "1회차 (기본 기록)",
+            date: new Date().toISOString().slice(0, 10),
+            counts: initialCounts,
+            logs: []
+          }
+        ]
+      };
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY_PRO, JSON.stringify(appState));
+      render();
+    }
+
+    function getCurrentSession() {
+      return appState.sessions.find(s => s.id === appState.activeSessionId) || null;
+    }
+
+    function getAggregatedCounts() {
+      if (appState.activeSessionId === "ALL_SESSIONS") {
+        const totalCounts = {};
+        appState.sessions.forEach(s => {
+          Object.entries(s.counts || {}).forEach(([k, v]) => {
+            totalCounts[k] = (totalCounts[k] || 0) + v;
+          });
+        });
+        return totalCounts;
+      }
+      const s = getCurrentSession();
+      return s ? (s.counts || {}) : {};
+    }
+
+    function changeSession(val) {
+      appState.activeSessionId = val;
+      saveState();
+    }
+
+    function createSession() {
+      const input = document.getElementById("newSessionName");
+      const name = input.value.trim();
+      if (!name) {
+        alert("새 모의고사 회차 이름을 입력해 주세요. (예: 27학년도 6평, 이감 3회)");
+        return;
+      }
+      const newId = "s_" + Date.now();
+      appState.sessions.push({
+        id: newId,
+        name: name,
+        date: new Date().toISOString().slice(0, 10),
+        counts: {},
+        logs: []
+      });
+      appState.activeSessionId = newId;
+      input.value = "";
+      saveState();
+    }
+
+    function deleteCurrentSession() {
+      if (appState.activeSessionId === "ALL_SESSIONS") {
+        alert("전체 누적 합산 뷰에서는 회차를 삭제할 수 없습니다. 개별 회차를 선택해 주세요.");
+        return;
+      }
+      if (appState.sessions.length <= 1) {
+        alert("최소 1개의 회차는 남아 있어야 합니다. 내용을 비우려면 [현재 회차 초기화]를 눌러주세요.");
+        return;
+      }
+      const cur = getCurrentSession();
+      if (confirm(`[${cur.name}] 회차 기록을 완전히 삭제할까요?`)) {
+        appState.sessions = appState.sessions.filter(s => s.id !== cur.id);
+        appState.activeSessionId = appState.sessions[appState.sessions.length - 1].id;
+        saveState();
+      }
+    }
+
+    function resetCurrentSession() {
+      if (appState.activeSessionId === "ALL_SESSIONS") {
+        if (confirm("모든 회차의 전체 데이터를 초기화할까요?")) {
+          appState.sessions.forEach(s => { s.counts = {}; s.logs = []; });
+          saveState();
+        }
+        return;
+      }
+      const cur = getCurrentSession();
+      if (cur && confirm(`[${cur.name}] 회차의 카운트와 문항 기록을 초기화할까요?`)) {
+        cur.counts = {};
+        cur.logs = [];
+        saveState();
+      }
+    }
+
+    function updateCount(id, delta) {
+      if (appState.activeSessionId === "ALL_SESSIONS") {
+        alert("전체 누적 합산(ALL) 모드에서는 개별 카운트를 직접 수정할 수 없습니다. 상단에서 기록할 회차를 선택해 주세요.");
+        return;
+      }
+      const cur = getCurrentSession();
+      if (!cur) return;
+      const current = cur.counts[id] || 0;
+      const next = Math.max(0, current + delta);
+      if (next === 0) {
+        delete cur.counts[id];
+      } else {
+        cur.counts[id] = next;
+      }
+      saveState();
+    }
+
+    function quickAddTag() {
+      if (appState.activeSessionId === "ALL_SESSIONS") {
+        alert("기록할 모의고사 회차를 먼저 선택해 주세요.");
+        return;
+      }
+      const cur = getCurrentSession();
+      const qNum = document.getElementById("qNumInput").value.trim() || "-";
+      const rawCodes = document.getElementById("qCodesInput").value.toUpperCase();
+      const memo = document.getElementById("qMemoInput").value.trim();
+
+      const parsedCodes = rawCodes.split(/[\s,+]+/).filter(Boolean);
+      if (parsedCodes.length === 0) {
+        alert("오답 코드를 1개 이상 입력해 주세요. (예: A4 B6)");
+        return;
+      }
+
+      const invalid = parsedCodes.filter(c => !VALID_IDS.has(c));
+      if (invalid.length > 0) {
+        alert(`존재하지 않는 코드입니다: ${invalid.join(", ")}\n(A1~A10, B1~B9, C1~C11, D1~D6, E1~E6 중 입력)`);
+        return;
+      }
+
+      parsedCodes.forEach(code => {
+        cur.counts[code] = (cur.counts[code] || 0) + 1;
+      });
+
+      cur.logs = cur.logs || [];
+      cur.logs.unshift({
+        id: "log_" + Date.now(),
+        qNum,
+        codes: parsedCodes,
+        memo
+      });
+
+      document.getElementById("qNumInput").value = "";
+      document.getElementById("qCodesInput").value = "";
+      document.getElementById("qMemoInput").value = "";
+      document.getElementById("qNumInput").focus();
+      saveState();
+    }
+
+    function removeLog(sessionId, logId) {
+      const targetSession = appState.sessions.find(s => s.id === sessionId);
+      if (!targetSession || !targetSession.logs) return;
+      const idx = targetSession.logs.findIndex(l => l.id === logId);
+      if (idx === -1) return;
+
+      const logItem = targetSession.logs[idx];
+      logItem.codes.forEach(code => {
+        if (targetSession.counts[code]) {
+          targetSession.counts[code] = Math.max(0, targetSession.counts[code] - 1);
+          if (targetSession.counts[code] === 0) delete targetSession.counts[code];
+        }
+      });
+
+      targetSession.logs.splice(idx, 1);
+      saveState();
+    }
+
+    function setCategory(cat) {
+      currentCategory = cat;
+      render();
+    }
+
+    function toggleActiveFilter() {
+      showOnlyActive = !showOnlyActive;
+      document.getElementById("filterActiveBtn").classList.toggle("active", showOnlyActive);
+      render();
+    }
+
+    // Export / Import
+    function exportSummary() {
+      const counts = getAggregatedCounts();
+      const scopeName = appState.activeSessionId === "ALL_SESSIONS" ? "전체 회차 누적" : getCurrentSession().name;
+      const activeItems = ERROR_DATA
+        .filter(item => (counts[item.id] || 0) > 0)
+        .sort((a, b) => (counts[b.id] || 0) - (counts[a.id] || 0));
+
+      if (activeItems.length === 0) {
+        alert("체크된 오답 항목이 없습니다.");
+        return;
+      }
+
+      let text = `=== [국어 실전 오답 리포트 : ${scopeName}] ===\n`;
+      activeItems.forEach((item, idx) => {
+        text += `${idx + 1}. [${item.id}] ${item.title} (${counts[item.id]}회)\n   ↳ If-Then 처방: ${item.action}\n`;
+      });
+
+      navigator.clipboard.writeText(text).then(() => {
+        alert("현재 뷰의 취약점 리포트와 처방전이 클립보드에 복사되었습니다!");
+      });
+    }
+
+    function exportCSV() {
+      let rows = [["회차명", "날짜", "오답코드", "영역", "오답유형명", "누적횟수", "실전행동강령"]];
+      appState.sessions.forEach(s => {
+        ERROR_DATA.forEach(item => {
+          const cnt = (s.counts && s.counts[item.id]) || 0;
+          if (cnt > 0) {
+            rows.push([
+              s.name,
+              s.date || "",
+              item.id,
+              item.cat,
+              item.title,
+              cnt,
+              item.action
+            ]);
+          }
+        });
+      });
+
+      if (rows.length === 1) {
+        alert("내보낼 오답 기록이 없습니다.");
+        return;
+      }
+
+      const csvContent = "\uFEFF" + rows.map(r => r.map(field => `"${String(field).replace(/"/g, '""')}"`).join(",")).join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `국어_오답트래커_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportJSON() {
+      const dataStr = JSON.stringify(appState, null, 2);
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `korean_error_backup_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed && Array.isArray(parsed.sessions)) {
+            appState = parsed;
+            saveState();
+            alert("JSON 백업 데이터가 성공적으로 복원되었습니다.");
+          } else {
+            alert("유효한 백업 파일 형식이 아닙니다.");
+          }
+        } catch (err) {
+          alert("파일을 읽는 중 오류가 발생했습니다.");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    }
+
+    // Rendering
+    function renderSessionSelector() {
+      const sel = document.getElementById("sessionSelect");
+      const isAll = appState.activeSessionId === "ALL_SESSIONS";
+
+      let html = `<option value="ALL_SESSIONS" ${isAll ? "selected" : ""}>📊 전체 누적 합산 (${appState.sessions.length}개 회차)</option>`;
+      appState.sessions.forEach(s => {
+        const total = Object.values(s.counts || {}).reduce((a, b) => a + b, 0);
+        const selected = s.id === appState.activeSessionId ? "selected" : "";
+        html += `<option value="${s.id}" ${selected}>📝 ${s.name} (${total}회)</option>`;
+      });
+      sel.innerHTML = html;
+
+      document.getElementById("delSessionBtn").disabled = isAll;
+      document.getElementById("quickAddBtn").disabled = isAll;
+    }
+
+    function renderDashboard() {
+      const counts = getAggregatedCounts();
+      const isAll = appState.activeSessionId === "ALL_SESSIONS";
+      const curSession = getCurrentSession();
+
+      document.getElementById("statScopeTitle").textContent = isAll ? "전체 회차 누적 태깅" : `[${curSession.name}] 태깅`;
+
+      let total = 0;
+      let activeTypes = 0;
+      const catTotals = {};
+
+      ERROR_DATA.forEach(item => {
+        const c = counts[item.id] || 0;
+        total += c;
+        if (c > 0) activeTypes++;
+        catTotals[item.cat] = (catTotals[item.cat] || 0) + c;
+      });
+
+      document.getElementById("totalCount").textContent = `${total}회`;
+      document.getElementById("activeTypesCount").textContent = `${activeTypes} / 42개 유형`;
+
+      // Category bars
+      const catBarsEl = document.getElementById("catBars");
+      const uniqueCats = [...new Set(ERROR_DATA.map(d => d.cat))];
+      catBarsEl.innerHTML = uniqueCats.map(cat => {
+        const val = catTotals[cat] || 0;
+        const pct = total > 0 ? Math.round((val / total) * 100) : 0;
+        return `
+          <div class="cat-bar-row">
+            <span class="cat-bar-label" title="${cat}">${cat}</span>
+            <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%"></div></div>
+            <span class="cat-bar-val">${val}</span>
+          </div>
+        `;
+      }).join("");
+
+      // Top 5 Weaknesses
+      const topContainer = document.getElementById("topWeaknessContainer");
+      const sorted = ERROR_DATA
+        .filter(item => (counts[item.id] || 0) > 0)
+        .sort((a, b) => (counts[b.id] || 0) - (counts[a.id] || 0))
+        .slice(0, 5);
+
+      if (sorted.length === 0) {
+        topContainer.innerHTML = `<div class="empty-state">상단 <strong>빠른 2중 태깅 입력</strong>을 쓰거나 아래 카드에서 <strong>[+]</strong>를 누르면 Top 5 취약점과 처방전이 표시됩니다.</div>`;
+      } else {
+        topContainer.innerHTML = sorted.map(item => `
+          <div class="weakness-item">
+            <div>
+              <div class="weakness-title">[${item.id}] ${item.title}</div>
+              <div class="weakness-action"><strong>실전 행동 강령:</strong> ${item.action}</div>
+            </div>
+            <div class="weakness-badge">${counts[item.id]}회</div>
+          </div>
+        `).join("");
+      }
+
+      // Question Log
+      const logContainer = document.getElementById("qLogContainer");
+      let logsToRender = [];
+      if (isAll) {
+        appState.sessions.forEach(s => {
+          (s.logs || []).forEach(l => logsToRender.push({ ...l, sessionId: s.id, sessionName: s.name }));
+        });
+      } else if (curSession && curSession.logs) {
+        logsToRender = curSession.logs.map(l => ({ ...l, sessionId: curSession.id, sessionName: curSession.name }));
+      }
+
+      document.getElementById("qLogCount").textContent = `${logsToRender.length}건`;
+      if (logsToRender.length === 0) {
+        logContainer.innerHTML = `<div class="empty-state">문항 번호와 코드를 입력하면 문항별 오답 기록이 이곳에 남습니다.</div>`;
+      } else {
+        logContainer.innerHTML = logsToRender.map(l => `
+          <div class="q-log-item">
+            <div>
+              <strong>${isAll ? `[${l.sessionName}] ` : ""}${l.qNum}번</strong>
+              <span class="q-log-tags">[${l.codes.join(" + ")}]</span>
+              ${l.memo ? `<span style="color:var(--text-muted); margin-left:4px;">- ${l.memo}</span>` : ""}
+            </div>
+            <button class="q-del-btn" title="기록 삭제 및 카운트 차감" onclick="removeLog('${l.sessionId}', '${l.id}')">✕</button>
+          </div>
+        `).join("");
+      }
+    }
+
+    function renderTabs() {
+      const uniqueCats = ["ALL", ...new Set(ERROR_DATA.map(d => d.cat))];
+      const tabsEl = document.getElementById("categoryTabs");
+      tabsEl.innerHTML = uniqueCats.map(cat => {
+        const label = cat === "ALL" ? "전체 (42)" : cat;
+        const activeClass = currentCategory === cat ? "active" : "";
+        return `<button class="${activeClass}" onclick="setCategory('${cat}')">${label}</button>`;
+      }).join("");
+    }
+
+    function renderChecklist() {
+      const counts = getAggregatedCounts();
+      const isAll = appState.activeSessionId === "ALL_SESSIONS";
+      const query = document.getElementById("searchInput").value.trim().toLowerCase();
+      const container = document.getElementById("checklistContainer");
+      const uniqueCats = [...new Set(ERROR_DATA.map(d => d.cat))];
+
+      let html = "";
+
+      uniqueCats.forEach(cat => {
+        if (currentCategory !== "ALL" && currentCategory !== cat) return;
+
+        const filteredItems = ERROR_DATA.filter(item => {
+          if (item.cat !== cat) return false;
+          const cnt = counts[item.id] || 0;
+          if (showOnlyActive && cnt === 0) return false;
+          if (query) {
+            return (
+              item.id.toLowerCase().includes(query) ||
+              item.title.toLowerCase().includes(query) ||
+              item.desc.toLowerCase().includes(query) ||
+              item.action.toLowerCase().includes(query)
+            );
+          }
+          return true;
+        });
+
+        if (filteredItems.length === 0) return;
+
+        html += `
+          <section class="category-section">
+            <div class="category-header">
+              <span>${cat}</span>
+              <span style="font-size:0.76rem; color:var(--text-muted); font-weight:600;">${filteredItems.length}개 항목</span>
+            </div>
+            <div class="items-grid">
+              ${filteredItems.map(item => {
+                const cnt = counts[item.id] || 0;
+                const activeCardClass = cnt > 0 ? "has-count" : "";
+                return `
+                  <div class="item-card ${activeCardClass}">
+                    <div>
+                      <div class="item-top">
+                        <span class="code-badge">${item.id}</span>
+                        <div class="item-title">${item.title}</div>
+                        <div class="counter-box">
+                          <button class="cnt-btn" ${isAll ? "disabled" : ""} onclick="updateCount('${item.id}', -1)">-</button>
+                          <span class="cnt-val">${cnt}</span>
+                          <button class="cnt-btn" ${isAll ? "disabled" : ""} onclick="updateCount('${item.id}', 1)">+</button>
+                        </div>
+                      </div>
+                      <div class="item-desc" style="margin-top:4px;">• <strong>오답 상황:</strong> ${item.desc}</div>
+                    </div>
+                    <div class="item-prescription">
+                      <strong>If-Then 처방:</strong> ${item.action}
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          </section>
+        `;
+      });
+
+      container.innerHTML = html || `<div class="empty-state">검색 조건에 맞는 오답 항목이 없습니다.</div>`;
+    }
+
+    function render() {
+      renderSessionSelector();
+      renderDashboard();
+      renderTabs();
+      renderChecklist();
+    }
+
+    // 단축키: '/' 누르면 검색창 포커스
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "/" && document.activeElement.tagName !== "INPUT") {
+        e.preventDefault();
+        document.getElementById("searchInput").focus();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
